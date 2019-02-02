@@ -28,7 +28,7 @@
 				this.height = 40;
 
 				this.img = new Image();
-				this.img.src = "Bread.png";
+				this.img.src = "poutine.png";
 			}
 
 			// Movement methods - don't let bread move off the screen
@@ -59,7 +59,7 @@
 				this.height = 40;
 
 				this.img = new Image();
-				this.img.src = "bread.png";
+				this.img.src = "poutine.png";
 			}
 
 			// Movement methods - don't let bread move off the screen
@@ -191,7 +191,7 @@
 				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
 				if (this.y + this.height > cHeight){
 					
-					this.x = Math.floor((Math.random() * 490) + 510);
+					this.x = Math.floor((Math.random() * 440) + 510);
 					this.y = 0;
 					
 				}
@@ -216,7 +216,7 @@
 			// Constructor
 			constructor(){
 				this.x = 400;
-				this.y = -500;
+				this.y = 100;
 				this.width = 80;
 				this.height = 80;
 
@@ -279,7 +279,7 @@
 			// Constructor
 			constructor(){
 				this.x = 800;
-				this.y = -500;
+				this.y = (-500);
 				this.width = 80;
 				this.height = 80;
 
@@ -318,7 +318,7 @@
 				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
 				if (this.y + this.height > cHeight){
 					
-					this.x = Math.floor((Math.random() * 490) + 510);
+					this.x = Math.floor((Math.random() * 440) + 510);
 					this.y = 0;
 					
 				}
@@ -400,7 +400,7 @@
 			bread2 = new bread2Class();
 			cheese2 = new cheese2Class();
 			
-			cheese3 = new cheese1Class();
+			cheese3 = new cheese3Class();
 			cheese4 = new cheese4Class();
 
 
