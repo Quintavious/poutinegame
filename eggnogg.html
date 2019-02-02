@@ -140,8 +140,8 @@
 			var p1 = new playerClass(150, "eggnoggPlayer1.png");
 			var p2 = new playerClass(600, "eggnoggPlayer2.png");
 
-			livesLeft1 = 3;
-			livesLeft2 = 3;
+			var livesLeft1 = 3;
+			var livesLeft2 = 3;
 			
 
 			class rectClass{
@@ -232,7 +232,6 @@
 			// Movement code for both players
 			if (curkeys[65]){	// A
 				p1.moveLeft();
-				p2.bVisible=  false;
 			}
 			if (curkeys[68]){	// D
 				p1.moveRight();
@@ -256,13 +255,41 @@
 				if (livesLeft2 == 3){
 					life6.bVisible = false;
 					livesLeft2--;
+					p1.x = 15;
+					p2.x = 300;
+				}
+				else if (livesLeft2 == 2){
+					life5.bVisible = false;
+					livesLeft2--;
+					p1.x = 15;
+					p2.x = 300;
+				}
+				else if (livesLeft2 == 1){
+					life4.bVisible = false;
+					livesLeft2--;
+					window.alert("Player 1 won");
+					p1.x = 15;
+					p2.x = 300;
 				}
 			}
 			if (curkeys[85] && p2.intersects(p1)){
 				p2.bVisible = false;
 				if (livesLeft1 == 3){
+					p1.x = 15;
+					p2.x = 300;
 					life1.bVisible = false;
 					livesLeft1--;
+				}
+				else if (livesLeft1 == 2){
+					life2.bVisible = false;
+					livesLeft1--;
+					p1.x = 15;
+					p2.x = 300;
+				}
+				else if (livesLeft1 == 1){
+					life3.bVisible = false;
+					livesLeft1--;
+					window.alert("Player 2 won");
 				}
 			}
 
