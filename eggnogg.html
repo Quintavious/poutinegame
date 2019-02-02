@@ -1,0 +1,320 @@
+<html>
+<head>
+
+	<style>
+		canvas{
+			background: #dddddd;
+		}
+	</style>
+
+	<script>
+
+
+		//
+		// COPY IN ANY CLASSES THAT YOU'LL USE, e.g. timerClass or rectClass
+		//
+		
+	
+		// The current direction of the character
+		curDirection = 1;
+		
+		// This timer class keeps track of how much time has elapsed
+		// since the last time it fired.
+		class timerClass{
+			constructor(timeIntervalMS){
+				// Initialize oldTime to be the time of creation
+				this.oldTime = new Date();
+
+				// Set interval to elapse before the timer fires
+				this.interval = timeIntervalMS;
+				
+				// Keeps track of the # of milliseconds accumulated since the last firing
+				this.accum = 0;
+			}
+
+			// This method returns true if the timer is ready to fire, false otherwise
+			// If it returns true, then resets fire interval
+			isReady(){
+				var curTime = new Date();
+				var delta = curTime - this.oldTime;
+
+				this.accum += delta;
+				this.oldTime = curTime;
+				if (this.accum > this.interval){
+					this.accum = 0;
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+	
+		// Player
+		class playerClass{
+			constructor(playerX, playerImg){
+				// Constructor
+				this.x = playerX;
+				this.y = 348;
+				this.width = 45;
+				this.height = 50;
+				this.img = new Image;
+				this.img.src = playerImg;
+				
+				this.bInAir = false;
+				this.curYspeed = 0;
+				
+				// Judge whether or not the player is moving 
+				this.running = false;
+				
+				this.bVisible = true;
+				
+			}
+				// Move right
+				moveRight(){
+					this.running = true;
+					if (this.running == true){
+						this.x+=3;
+					}
+				}
+				// Move left
+				moveLeft(){
+					this.running = true;
+					if (this.running == true){
+						this.x-=3;
+					}
+				}
+			
+				// Initiate the a jump for the players
+				jump(){
+					// Can initiate jump only if players is currently on the ground
+					if (this.bInAir == false){
+						this.bInAir = true;
+						this.curYspeed = -15;
+					}
+				}
+				intersects(player){
+					if (this.x < player.x + player.width &&
+						this.x + this.width > player.x &&
+						this.y < player.y + player.height &&
+						this.y + this.height > player.y)
+					{
+				 		return true;
+					}
+					else{
+						return false;
+					}
+				}
+				// This updates the players current location & speed (e.g. if it's falling in the air)
+				// (Must be called in the main gameUpdate method)	
+				update(){
+
+					// If the p1 is currently in the air (i.e. mid-jump), then update its
+					// location and current vertical speed
+					if (this.bInAir == true){
+						// Update our y-coord and y-speed
+						this.y += this.curYspeed;
+						this.curYspeed++;
+
+						// Check if we landed on the ground
+						if (this.y > 348){
+							this.y = 348;
+							this.bInAir = false;
+							this.curYspeed = 0;
+						}
+					}
+					
+				}
+				// Draw
+				draw(){
+					if (this.bVisible == true){
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+				
+			}
+
+			// Instantiate the players
+			var p1 = new playerClass(150, "eggnoggPlayer1.png");
+			var p2 = new playerClass(600, "eggnoggPlayer2.png");
+			
+
+			class rectClass{
+			constructor(rectX, rectImg){
+				// Constructor
+				this.x = rectX;
+				this.y = 100;
+				this.width = 35;
+				this.height = 40;
+				this.img = new Image;
+				this.img.src = rectImg;
+				
+				this.curYspeed = 0;
+				
+				this.bVisible = true;
+				
+			}
+				
+				// Draw
+				draw(){
+					if (this.bVisible == true){
+						c.drawImage(this.img, this.x, this.y, this.width, this.height);
+					}
+				}
+			}
+				
+			var life1 = new rectClass(50, "poutinePixelArt.jpg");
+			var life2 = new rectClass(90, "poutinePixelArt.jpg");
+			var life3 = new rectClass(130, "poutinePixelArt.jpg");
+			var life4 = new rectClass(700, "poutinePixelArt.jpg");
+			var life5 = new rectClass(660, "poutinePixelArt.jpg");
+			var life6 = new rectClass(620, "poutinePixelArt.jpg");
+		
+
+		// Canvas context; used to call Canvas methods
+		var c;
+
+		// Canvas width and height.
+		var cWidth, cHeight;
+
+		// Stores the current keyboard state
+		var curkeys = [];
+		
+		// Stores keys that have been newly pressed since last update
+		var newkeys = [];
+
+
+
+		// Initializes entire game framework. This method should only be called
+		// once, by the body onload event handler.
+		function gameFrameworkInit(){		
+			// Initialize key arrays
+			for (i = 0; i < 256; i++){
+				curkeys[i] = false;
+				newkeys[i] = false;
+			}
+		
+			// Initialize global variables for canvas
+			c = myCanvas.getContext('2d');
+			cWidth = myCanvas.width;
+			cHeight = myCanvas.height;
+
+
+			// Start listeners for getting keyboard state
+	        window.addEventListener('keydown',
+	        						 function(e){
+										if (!curkeys[e.keyCode]){
+											curkeys[e.keyCode] = true;
+											newkeys[e.keyCode] = true;
+										}
+									 }
+	        					   );
+	        
+	        window.addEventListener('keyup',
+	        						 function(e){ curkeys[e.keyCode] = false; }
+	        					   );
+
+			// Schedule the update function to be called right before the next repaint.
+			// (At the end of the update function, it will schedule itself to be called
+			// again before the NEXT repaint, and so on.
+			window.requestAnimationFrame(gameUpdate);
+		}
+		// First Stage
+		var stage1 = new Image();
+		stage1.src = "background.PNG";
+
+		function gameUpdate(){
+			// Movement code for both players
+			if (curkeys[65]){	// A
+				p1.moveLeft();
+			}
+			if (curkeys[68]){	// D
+				p1.moveRight();
+			}
+			if (curkeys[74]){	// J
+				p2.moveLeft();
+			}
+			if (curkeys[76]){	// L
+				p2.moveRight();
+			}
+			// Jumping code for both players
+			if (curkeys[87]){	// W
+				p1.jump();
+			}
+			if (curkeys[73]){	// I
+				p2.jump();
+			}
+
+			if (p2.bVisble == true){
+				if (p1.intersects(p2) && curkeys[81]){
+					p2.bVisible = false;
+				}
+			}
+			
+			
+			
+	
+			// Update the objects always
+			p1.update();
+			p2.update();
+			
+			
+			
+
+			// DO NOT ADD ANY OR MODIFY ANY CODE BELOW HERE
+
+			// Reset newkeys
+			for (i = 0; i < 256; i++){
+				newkeys[i] = false;
+			}
+
+			// At the end of the update function, repaint the screen
+			gameDraw();
+				
+			// Last thing the update function does is to schedule itself to be called
+			// again before the next repaint
+			window.requestAnimationFrame(gameUpdate);
+		}
+		
+		
+
+
+		function gameDraw(){
+			// Clear the canvas before we draw the current frame
+			c.clearRect(0,0,cWidth,cHeight);
+
+			// Draw the starting background
+			c.drawImage(stage1, 0, 0, 800, 600);
+
+			
+			
+			// Draw the players
+			p1.draw();
+			p2.draw();
+
+			//Draw the lives
+			life1.draw();
+			life2.draw();
+			life3.draw();
+			life4.draw();
+			life5.draw();
+			life6.draw();
+			
+		}
+
+
+	</script>
+
+</head>
+
+
+<body onload="gameFrameworkInit()">
+	
+	<canvas id="myCanvas" width="800" height="600"></canvas>
+
+</body>
+
+
+</html>
+
+
