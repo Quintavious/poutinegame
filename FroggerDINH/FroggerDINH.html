@@ -1,0 +1,503 @@
+<html>
+<head>
+
+	<style>
+		canvas{
+			background-image: url("background.jpg");
+		}
+	</style>
+
+	<script>
+		
+		// sets speed of how fast initial log is moving
+		var logSpeed = 10;
+		
+
+		// This class represents a log object
+		class logClass{
+			constructor(logX, logY,				// Location
+						logWidth, logHeight, logNumber)	// Dimensions
+			{
+				this.x = logX;
+				this.y = logY;
+				this.width = logWidth;
+				this.height = logHeight;
+				
+				this.number = logNumber;
+				
+				this.img = new Image();
+				// this.img.src = rectImg;
+				this.img.src = "log2.png";
+			}
+
+
+			// This method will be called by the gameUpdate function.
+			// It should take care of all movement, including wrapping
+			// (the gameUpdate() function should not have to worry about wrapping)
+			move(){	
+					
+					this.x -= logSpeed;
+				
+				// Function tells log to wrap from the left side of the canvas to the right side
+					if (this.x <= -(this.width)){
+						this.x = cWidth;
+					}
+				
+				//
+			}
+		
+		
+
+
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the log on the screen.
+			draw(){
+				c.drawImage(this.img,
+							this.x,
+							this.y,
+							this.width,
+							this.height);
+			}
+			
+			
+			// when logs are told to respawn, they are set to coordinates assigned by their number
+			respawn(){
+				
+				if (this.number == 1){
+					this.x = 200;
+					this.y = 420;
+				}
+				
+				else if (this.number == 2){
+					this.x = 600;
+					this.y = 50;
+				
+				}
+				
+
+			}
+
+		}
+
+		
+		// creates log objects, with separates coordinates, sizes, and differnet assigned numbers
+		
+		var logObject1 = new logClass(200, 420, 70, 50, 1);
+		var logObject2 = new logClass(600, 50, 100, 80, 2);
+
+
+
+		// setting initial speed of how fast danny devito goes
+        var carSpeed = 3;
+        
+		class carClass{
+			constructor(carX, carY,				// Location
+						carWidth, carHeight)	// Dimensions
+			{
+				this.x = carX;
+				this.y = carY;
+				this.width = carWidth;
+				this.height = carHeight;
+				
+				this.img = new Image();
+				// this.img.src = rectImg;
+				this.img.src = "chargeright.jpg";
+			}
+			
+			move(){
+			
+            // Function will move car left and right, and bounce back and forth when hitting a wall  
+            this.x += carSpeed;
+            
+            // if the x coord of the image moves to where the edge of the image will touch the end of the canvas, the speed it reversed    
+            if (this.x >= (cWidth - this.width)){
+                carSpeed = -(carSpeed);
+                this.img.src = "chargeleft.jpg";
+            }
+            
+            // If the x coord hits 0,(end of canvas) speed is reversed  
+            
+            if (this.x <= 0){
+                carSpeed = -(carSpeed);
+                this.img.src = "chargeright.jpg";
+			}
+        
+			}
+			
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the car on the screen.
+			draw(){
+				c.drawImage(this.img,
+							this.x,
+							this.y,
+							this.width,
+							this.height);
+			}
+			
+			
+			
+			respawn(){
+				this.x = Math.floor(Math.random()*400) + 1;
+				this.y = 210;
+				
+			}
+		}
+		
+		var carObject = new carClass(150, 210, 200, 80);
+
+		
+
+		// This class represents the frog
+		class frogClass{
+			constructor(frogX, frogY,			// Location
+						frogWidth, frogHeight,	// Dimensions
+						frogDirection)			// Can be "Up", "Down", "Left", or "Right"
+			{
+				this.x = frogX;
+				this.y = frogY;
+				this.width = frogWidth;
+				this.height = frogHeight;
+				
+				this.Direction = frogDirection;
+				
+			}
+
+
+			// Methods for frog movement
+			hopLeft(){ 
+				this.x -= 50;
+				this.direction = "Left";
+			}
+			hopRight(){
+				this.x += 50;
+				this.direction = "Right";
+			}
+			hopUp(){
+				this.y -= 50;
+				this.direction = "Up";
+			}
+			hopDown(){
+				this.y += 50;
+				this.direction = "Down";
+			}
+
+
+			// This method will be called by the gameDraw function.
+			// It should draw a picture of the frog on the screen.
+			draw(){
+				var currentImage = new Image();
+				
+				currentImage.src = "FrogUp.png";
+				
+				if (this.direction == "Up"){
+					currentImage.src = "FrogUp.png";
+				}
+				
+				else if (this.direction == "Down"){
+					currentImage.src = "FrogDown.png";
+				}
+				
+				else if (this.direction == "Right"){
+					currentImage.src = "FrogRight.png";
+				}
+				
+				else if (this.direction == "Left"){
+					currentImage.src = "FrogLeft.png";
+				}
+				
+				c.drawImage(currentImage,
+							this.x,
+							this.y,
+							this.width,
+							this.height);
+			}
+			
+
+
+			// This function returns true if this frog intersects "obj",
+			// where "obj" is either a car object or a log object.
+			// Returns false otherwise.
+			// Example: if (frog1.intersects(log1)){ ... }
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+	
+		var frogObject = new frogClass(350, 500, 140, 100, "UP");
+	
+		// Canvas context; used to call Canvas methods
+		var c;
+
+		// Canvas width and height.
+		var cWidth, cHeight;
+
+		// Stores the current keyboard state
+		var curkeys = [];
+		
+		// Stores keys that have been newly pressed since last update
+		var newkeys = [];
+
+
+
+		// The current game state, can be one of: "play", "win", "lose"
+		// You won't be working with this until Task #4
+		var gameState = "play";
+
+		var wins = 0;
+		var losses = 0;
+		
+		var lives = 3;
+
+		// Initializes entire game framework. This method should only be called
+		// once, by the body onload event handler.
+		function gameFrameworkInit(){		
+			// Initialize key arrays
+			for (i = 0; i < 256; i++){
+				curkeys[i] = false;
+				newkeys[i] = false;
+			}
+		
+			// Initialize global variables for canvas
+			c = myCanvas.getContext('2d');
+			cWidth = myCanvas.width;
+			cHeight = myCanvas.height;
+
+
+			// Start listeners for getting keyboard state
+	        window.addEventListener('keydown',
+	        						 function(e){
+										if (!curkeys[e.keyCode]){
+											curkeys[e.keyCode] = true;
+											newkeys[e.keyCode] = true;
+										}
+									 }
+	        					   );
+	        
+	        window.addEventListener('keyup',
+	        						 function(e){ curkeys[e.keyCode] = false; }
+	        					   );
+
+			// Schedule the update function to be called right before the next repaint.
+			// (At the end of the update function, it will schedule itself to be called
+			// again before the NEXT repaint, and so on.
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		// Main update loop for the entire game
+		function gameUpdate(){
+			//
+			// YOUR CODE GOES HERE
+			//
+			
+			if(gameState == "play"){
+			
+				// if w is pressed
+				if (newkeys[87]){
+					frogObject.hopUp();
+				}
+				
+				// if a is pressed
+				else if (newkeys[65]){
+					frogObject.hopLeft();
+				}
+				
+				// s pressed
+				else if (newkeys[83]){
+					frogObject.hopDown();
+				}
+				
+				// d pressed
+				else if (newkeys[68]){
+					frogObject.hopRight();
+				}
+				
+				// if the frog runs into an enemy, gameState turns to lose, and variables are adjusted
+				
+				if(frogObject.intersects(carObject)){
+					gameState = "lose";
+					losses ++;
+					lives --;
+				}
+				
+				if(frogObject.intersects(logObject1)){
+					gameState = "lose";
+					losses ++ ;
+					lives -- ;
+				}
+				
+				if(frogObject.intersects(logObject2)){
+					gameState = "lose";
+					losses ++;
+					lives --;
+				}
+				
+				// if frog tries to escape screen, doesnt allow it
+				// sets its x back to 1 so cant leave screen
+				if(frogObject.x <= 0){
+				
+					frogObject.x = 1;
+				}
+				
+				if (frogObject.x >= (cWidth - frogObject.width)){
+					frogObject.x = (cWidth - frogObject.width);
+				}
+				
+				if (frogObject.y >= (cHeight - frogObject.height + 10)){
+					frogObject.y = 500;
+					console.log(frogObject.y);
+				}
+		
+				logObject1.move();
+				logObject2.move()
+				carObject.move();
+				
+				if (frogObject.y <= -40){
+					gameState = "win";
+					wins ++;
+					logSpeed = logSpeed + 5;
+					carSpeed = carSpeed + 5;
+				}
+				
+			}
+			
+			// if player has lost and still has lives left, you can press shift to reset image coords
+			if(gameState == "lose" && lives != 0){
+				
+				if (curkeys[13]){
+						frogObject.x = 350;
+						frogObject.y = 500;
+						gameState = "play";
+						
+						carObject.respawn();
+						logObject1.respawn();
+						logObject2.respawn();
+						
+				}
+			
+			}
+			
+			// if player wins by reaching ceiling, can press 'enter' to reset image coordinates and play again 
+			
+			if(gameState == "win"){
+				
+				if (curkeys[13]){
+						frogObject.x = 350;
+						frogObject.y = 500;
+						gameState = "play";
+							
+						carObject.respawn();
+						logObject1.respawn();
+						logObject2.respawn();
+						
+						
+				}
+			
+			}
+			
+			
+			// if the player has lost the game and has no lives left, has the choice to press shift, game resets 
+			if(lives == 0 && gameState == "lose"){
+				if (curkeys[16]){
+						frogObject.x = 350;
+						frogObject.y = 500;
+						gameState = "play";
+						
+						wins = 0;
+						losses = 0;
+						lives = 3;
+						
+						logSpeed = 10;
+						carSpeed = 3;
+						carObject.respawn();
+						logObject1.respawn();
+						logObject2.respawn();
+						
+						
+				}
+				
+			}
+			
+			
+			
+
+			//
+			// DO NOT ADD ANY CODE BELOW THIS, OR MODIFY ANY CODE BELOW THIS
+			//
+
+			// Reset newkeys
+			for (i = 0; i < 256; i++){
+				newkeys[i] = false;
+			}
+
+			// At the end of the update function, repaint the screen
+			gameDraw();
+				
+			// Last thing the update function does is to schedule itself to be called
+			// again before the next repaint
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		// Main draw loop for the entire game
+		function gameDraw(){
+			// Clear the canvas before we draw the current frame
+			c.clearRect(0,0,cWidth,cHeight);
+			
+			// draws all images 
+			logObject1.draw();
+			logObject2.draw();
+			carObject.draw();
+			frogObject.draw();
+			
+			// draws text over screen showing wins, losses, and lives 
+			c.font = "15px Arial";
+			c.fillStyle = "white";
+			c.fillText("Wins = " + wins, 7, 560);
+			c.fillText("Losses = " + losses, 7, 577);
+			c.fillText("Lives = " + lives, 7, 594);
+			
+			c.font = "30px Arial";
+			c.fillStyle = "white";
+			
+			// additional text if total game over
+			if (lives == 0 && gameState == "lose"){
+				c.fillText("You have lost ALL your lives! press 'Shift' to play again!", 90, 50);
+			}
+			
+			// if you still have lives left, yet you lost, other text comment
+			else if (gameState == "lose"){
+				c.fillText("You have lost a life, press 'Enter' to play again!", 90, 50);
+			}
+			
+			// if you have won the game, displays additional text
+			if (gameState == "win"){
+				c.fillText("You have won a round. The enemies have gotten faster! Press 'Enter' to play again!", 50, 50);
+			}
+			
+			
+		}
+
+
+	</script>
+
+</head>
+
+
+<body onload="gameFrameworkInit()">
+	
+	<canvas id="myCanvas" width="800" height="600"></canvas>
+
+</body>
+
+
+</html>
