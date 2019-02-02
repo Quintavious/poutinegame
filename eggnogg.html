@@ -89,7 +89,7 @@
 			
 				// Initiate the a jump for the players
 				jump(){
-					// Can initiate jump only if players is currently on the ground
+					// Can initiate jump only if players is currently on the ground 
 					if (this.bInAir == false){
 						this.bInAir = true;
 						this.curYspeed = -15;
@@ -252,22 +252,29 @@
 			}
 
 			if (curkeys[81] && p1.intersects(p2)){
-					p2.bVisible = false;
-					if (livesLeft2 == 3){
-						life6.bVisible = false;
-						livesLeft2--;
-					}
-					else if (livesLeft2 == 2){
-						life6.bVisible = false;
-						livesLeft2--;
-					}
-					else if (livesLeft2 == 1){
-						life6.bVisible = false;
-					}
+				p2.bVisible = false;
+				if (livesLeft2 == 3){
+					life6.bVisible = false;
+					livesLeft2--;
+				}
 			}
-			if (p2.bVisible == false){
+			if (curkeys[85] && p2.intersects(p1)){
+				p2.bVisible = false;
+				if (livesLeft1 == 3){
+					life1.bVisible = false;
+					livesLeft1--;
+				}
+			}
+
+
+
+
+			if (p2.bVisible == false || p1.bVisible == false){
 				if(timerPlayerRespawn.isReady()){
 					p2.bVisible = true;
+					p1.bVisible = true;
+					p1.x = 150;
+					p2.x = 600;
 				}
 			}
 			
