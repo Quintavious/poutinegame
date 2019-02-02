@@ -1,15 +1,45 @@
-function gameFrameworkInit(){		
+<html>
+<head>
+    <style>
+    body{
+        textalign: center
+        backgroundColor: black
+    }
+        canvas{
+            background: #dddddd;
+        }
+    </style>
+    <script>
+    function gameFrameworkInit(){		
 			// Initialize key arrays
 			for (i = 0; i < 256; i++){
 				curkeys[i] = false;
 				newkeys[i] = false;
 			}
-// Initialize global variables for canvas
+			
+			//Fills arrays and generates random x and y
+			for (i = 0; i < boostAmount; i++){
+				boostArray[i] = new boostClass(randBstX, randBstY);
+				var randBstX = Math.floor((Math.random()*20000) + 801);
+				var randBstY = Math.floor((Math.random()*300) + 450);
+			}
+			for (i = 0; i < pftAmount; i++){
+				platformArray[i] = new platformClass(randptfX, randptfY, randptfWidth, 25);
+				var randptfX = Math.floor((Math.random()*19300) + 801);
+				var randptfY = Math.floor((Math.random()*350) + 400);
+				var randptfWidth = Math.floor((Math.random()*400) + 100);
+			}
+			for (i = 0; i < obstAmount; i++){
+				obstArray[i] = new obstClass(obstX, 660);
+				var obstX = Math.floor((Math.random()*19300) + 801);
+			}
+		
+			// Initialize global variables for canvas
 			c = myCanvas.getContext('2d');
 			cWidth = myCanvas.width;
 			cHeight = myCanvas.height;
 			
-			background = new autoScrollingBackgroundClass();
+			background = new autoScrollingBackgroundClass("background.jfif", 0, 0, 20000, 1000);
 			
 			// Start listeners for getting keyboard state
 	        window.addEventListener('keydown',
@@ -29,9 +59,8 @@ function gameFrameworkInit(){
 			// (At the end of the update function, it will schedule itself to be called
 			// again before the NEXT repaint, and so on.
 			window.requestAnimationFrame(gameUpdate);
-      //Dan Cates
 		}
-		// Reset newkeys
+        // Reset newkeys
 			for (i = 0; i < 256; i++){
 				newkeys[i] = false;
 			}
@@ -49,3 +78,9 @@ function gameFrameworkInit(){
 			c.clearRect(0,0,cWidth,cHeight);
 			
 		}
+    </script>
+</head>
+    <body>
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+    </body>
+</html> 
