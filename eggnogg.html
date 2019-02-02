@@ -49,6 +49,8 @@
 				}
 			}
 		}
+
+		var timerPlayerRespawn = new timerClass(3000);
 	
 		// Player
 		class playerClass{
@@ -137,6 +139,9 @@
 			// Instantiate the players
 			var p1 = new playerClass(150, "eggnoggPlayer1.png");
 			var p2 = new playerClass(600, "eggnoggPlayer2.png");
+
+			livesLeft1 = 3;
+			livesLeft2 = 3;
 			
 
 			class rectClass{
@@ -227,6 +232,7 @@
 			// Movement code for both players
 			if (curkeys[65]){	// A
 				p1.moveLeft();
+				p2.bVisible=  false;
 			}
 			if (curkeys[68]){	// D
 				p1.moveRight();
@@ -245,12 +251,25 @@
 				p2.jump();
 			}
 
-			if (p2.bVisble == true){
-				if (p1.intersects(p2) && curkeys[81]){
+			if (curkeys[81] && p1.intersects(p2)){
 					p2.bVisible = false;
+					if (livesLeft2 == 3){
+						life6.bVisible = false;
+						livesLeft2--;
+					}
+					else if (livesLeft2 == 2){
+						life6.bVisible = false;
+						livesLeft2--;
+					}
+					else if (livesLeft2 == 1){
+						life6.bVisible = false;
+					}
+			}
+			if (p2.bVisible == false){
+				if(timerPlayerRespawn.isReady()){
+					p2.bVisible = true;
 				}
 			}
-			
 			
 			
 	
