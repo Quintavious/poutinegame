@@ -8,8 +8,6 @@
 	</style>
 
 	<script>
-
-
 		//
 		// COPY IN ANY CLASSES THAT YOU'LL USE, e.g. timerClass or rectClass
 		//
@@ -24,20 +22,17 @@
 			constructor(timeIntervalMS){
 				// Initialize oldTime to be the time of creation
 				this.oldTime = new Date();
-
 				// Set interval to elapse before the timer fires
 				this.interval = timeIntervalMS;
 				
 				// Keeps track of the # of milliseconds accumulated since the last firing
 				this.accum = 0;
 			}
-
 			// This method returns true if the timer is ready to fire, false otherwise
 			// If it returns true, then resets fire interval
 			isReady(){
 				var curTime = new Date();
 				var delta = curTime - this.oldTime;
-
 				this.accum += delta;
 				this.oldTime = curTime;
 				if (this.accum > this.interval){
@@ -49,9 +44,10 @@
 				}
 			}
 		}
-
 		var timerPlayerRespawn = new timerClass(3000);
-	
+		var timerPunch = new timerClass(2000);
+		var timerBlock = new timerClass(1000);
+
 		// Player
 		class playerClass{
 			constructor(playerX, playerImg){
@@ -70,6 +66,8 @@
 				this.running = false;
 				
 				this.bVisible = true;
+
+				this.blocking = false;
 				
 			}
 				// Move right
@@ -89,7 +87,7 @@
 			
 				// Initiate the a jump for the players
 				jump(){
-					// Can initiate jump only if players is currently on the ground 
+					// Can initiate jump only if players is currently on the ground 
 					if (this.bInAir == false){
 						this.bInAir = true;
 						this.curYspeed = -15;
@@ -110,14 +108,12 @@
 				// This updates the players current location & speed (e.g. if it's falling in the air)
 				// (Must be called in the main gameUpdate method)	
 				update(){
-
 					// If the p1 is currently in the air (i.e. mid-jump), then update its
 					// location and current vertical speed
 					if (this.bInAir == true){
 						// Update our y-coord and y-speed
 						this.y += this.curYspeed;
 						this.curYspeed++;
-
 						// Check if we landed on the ground
 						if (this.y > 348){
 							this.y = 348;
@@ -135,15 +131,12 @@
 				}
 				
 			}
-
 			// Instantiate the players
 			var p1 = new playerClass(150, "eggnoggPlayer1.png");
 			var p2 = new playerClass(600, "eggnoggPlayer2.png");
-
 			var livesLeft1 = 3;
 			var livesLeft2 = 3;
 			
-
 			class rectClass{
 			constructor(rectX, rectImg){
 				// Constructor
@@ -175,21 +168,15 @@
 			var life5 = new rectClass(695-80, "poutinePixelArt.png");
 			var life6 = new rectClass(695-80-80, "poutinePixelArt.png");
 		
-
 		// Canvas context; used to call Canvas methods
 		var c;
-
 		// Canvas width and height.
 		var cWidth, cHeight;
-
 		// Stores the current keyboard state
 		var curkeys = [];
 		
 		// Stores keys that have been newly pressed since last update
 		var newkeys = [];
-
-
-
 		// Initializes entire game framework. This method should only be called
 		// once, by the body onload event handler.
 		function gameFrameworkInit(){		
@@ -203,8 +190,6 @@
 			c = myCanvas.getContext('2d');
 			cWidth = myCanvas.width;
 			cHeight = myCanvas.height;
-
-
 			// Start listeners for getting keyboard state
 	        window.addEventListener('keydown',
 	        						 function(e){
@@ -218,7 +203,6 @@
 	        window.addEventListener('keyup',
 	        						 function(e){ curkeys[e.keyCode] = false; }
 	        					   );
-
 			// Schedule the update function to be called right before the next repaint.
 			// (At the end of the update function, it will schedule itself to be called
 			// again before the NEXT repaint, and so on.
@@ -227,20 +211,31 @@
 		// First Stage
 		var stage1 = new Image();
 		stage1.src = "background.PNG";
-
 		function gameUpdate(){
 			// Movement code for both players
 			if (curkeys[65]){	// A
 				p1.moveLeft();
+				var playerOneFlippedImg = new Image();
+				playerOneFlippedImg.src = "eggnoggPlayer2.png";
+				p1.img = playerOneFlippedImg;
 			}
 			if (curkeys[68]){	// D
 				p1.moveRight();
+				var playerOneRightImg = new Image();
+				playerOneRightImg.src = "eggnoggPlayer1.png";
+				p1.img = playerOneRightImg;
 			}
 			if (curkeys[74]){	// J
 				p2.moveLeft();
+				var playerTwoRightImg = new Image();
+				playerTwoRightImg.src = "eggnoggPlayer2.png";
+				p2.img = playerTwoRightImg;
 			}
 			if (curkeys[76]){	// L
 				p2.moveRight();
+				var playerTwoFlippedImg = new Image();
+				playerTwoFlippedImg.src = "eggnoggPlayer1.png";
+				p2.img = playerTwoFlippedImg;
 			}
 			// Jumping code for both players
 			if (curkeys[87]){	// W
@@ -249,53 +244,80 @@
 			if (curkeys[73]){	// I
 				p2.jump();
 			}
-
-			if (curkeys[81] && p1.intersects(p2)){
-				p2.bVisible = false;
-				if (livesLeft2 == 3){
-					life6.bVisible = false;
-					livesLeft2--;
-					p1.x = 15;
-					p2.x = 300;
-				}
-				else if (livesLeft2 == 2){
-					life5.bVisible = false;
-					livesLeft2--;
-					p1.x = 15;
-					p2.x = 300;
-				}
-				else if (livesLeft2 == 1){
-					life4.bVisible = false;
-					livesLeft2--;
-					window.alert("Player 1 won");
-					p1.x = 15;
-					p2.x = 300;
-				}
-			}
-			if (curkeys[85] && p2.intersects(p1)){
-				p2.bVisible = false;
-				if (livesLeft1 == 3){
-					p1.x = 15;
-					p2.x = 300;
-					life1.bVisible = false;
-					livesLeft1--;
-				}
-				else if (livesLeft1 == 2){
-					life2.bVisible = false;
-					livesLeft1--;
-					p1.x = 15;
-					p2.x = 300;
-				}
-				else if (livesLeft1 == 1){
-					life3.bVisible = false;
-					livesLeft1--;
-					window.alert("Player 2 won");
+			// Blocking Code for both players
+			if (curkeys[69]){	// E
+				if (timerBlock.isReady()){
+					p1.blocking = true;
 				}
 			}
 
+			if (curkeys[80]){ // P
+				if (timerBlock.isReady()){
+					p2.blocking = true;
+				}
+			} 
 
 
 
+			
+			if (curkeys[81]){	// Q
+				if(timerPunch.isReady()){
+					p1.x += 15;
+					if (p1.intersects(p2)){	
+						if (p2.blocking == false){
+							p2.bVisible = false;
+							if (livesLeft2 == 3){
+								life6.bVisible = false;
+								livesLeft2--;
+								p1.x = 15;
+								p2.x = 300;
+							}
+							else if (livesLeft2 == 2){
+								life5.bVisible = false;
+								livesLeft2--;
+								p1.x = 15;
+								p2.x = 300;
+							}
+							else if (livesLeft2 == 1){
+								life4.bVisible = false;
+								livesLeft2--;
+								window.alert("Player 1 won");
+								p1.x = 15;
+								p2.x = 300;
+							}
+						}
+					}
+				}
+			}
+				
+			if (curkeys[85]){ // U
+				if(timerPunch.isReady()){	
+					p2.x -=15;
+					if(p2.intersects(p1)){ 
+						p2.x -= 15;
+						if (p1.blocking == false){
+							p1.bVisible = false;
+							if (livesLeft1 == 3){
+								p1.x = 15;
+								p2.x = 300;
+								life1.bVisible = false;
+								livesLeft1--;
+							}
+								else if (livesLeft1 == 2){
+								life2.bVisible = false;
+								livesLeft1--;
+								p1.x = 15;
+								p2.x = 300;
+							}
+							else if (livesLeft1 == 1){
+								life3.bVisible = false;
+								livesLeft1--;
+								window.alert("Player 2 won");
+							}
+						}	
+					}
+				}
+			}
 			if (p2.bVisible == false || p1.bVisible == false){
 				if(timerPlayerRespawn.isReady()){
 					p2.bVisible = true;
@@ -313,14 +335,11 @@
 			
 			
 			
-
 			// DO NOT ADD ANY OR MODIFY ANY CODE BELOW HERE
-
 			// Reset newkeys
 			for (i = 0; i < 256; i++){
 				newkeys[i] = false;
 			}
-
 			// At the end of the update function, repaint the screen
 			gameDraw();
 				
@@ -330,21 +349,16 @@
 		}
 		
 		
-
-
 		function gameDraw(){
 			// Clear the canvas before we draw the current frame
 			c.clearRect(0,0,cWidth,cHeight);
-
 			// Draw the starting background
 			c.drawImage(stage1, 0, 0, 800, 600);
-
 			
 			
 			// Draw the players
 			p1.draw();
 			p2.draw();
-
 			//Draw the lives
 			life1.draw();
 			life2.draw();
@@ -354,8 +368,6 @@
 			life6.draw();
 			
 		}
-
-
 	</script>
 
 </head>
@@ -369,5 +381,4 @@
 
 
 </html>
-
 
