@@ -138,10 +138,10 @@
 			var livesLeft2 = 3;
 			
 			class rectClass{
-			constructor(rectX, rectImg){
+			constructor(rectX, rectY, rectImg){
 				// Constructor
 				this.x = rectX;
-				this.y = 60;
+				this.y = rectY;
 				this.width = 110;
 				this.height = 110;
 				this.img = new Image;
@@ -207,15 +207,15 @@
 				}
 			}
 				
-			var life3 = new rectClass(0, "poutinePixelArt.png");
-			var life2 = new rectClass(0+80, "poutinePixelArt.png");
-			var life1 = new rectClass(0+80+80, "poutinePixelArt.png");
-			var life4 = new rectClass(695, "poutinePixelArt.png");
-			var life5 = new rectClass(695-80, "poutinePixelArt.png");
-			var life6 = new rectClass(695-80-80, "poutinePixelArt.png");
+			var life3 = new rectClass(0, 60, "poutinePixelArt.png");
+			var life2 = new rectClass(0+80, 60, "poutinePixelArt.png");
+			var life1 = new rectClass(0+80+80, 60, "poutinePixelArt.png");
+			var life4 = new rectClass(695, 60, "poutinePixelArt.png");
+			var life5 = new rectClass(695-80, 60, "poutinePixelArt.png");
+			var life6 = new rectClass(695-80-80, 60,"poutinePixelArt.png");
 
-			var bub1 = new rectClass(125, "bub1.png")
-			var bub2 = new rectClass (575, "bub2.png")
+			var bub1 = new rectClass(120, 320, "bub1.png")
+			var bub2 = new rectClass (580, 320, "bub2.png")
 		
 		// Canvas context; used to call Canvas methods
 		var c;
@@ -268,7 +268,7 @@
 				playerOneFlippedImg.src = "eggnoggPlayer2.png";
 				p1.img = playerOneFlippedImg;
 				if (bub1.bVisible == true){
-					bub1.moveRight();
+					bub1.moveLeft();
 				}
 			}
 			if (curkeys[68]){	// D
@@ -286,7 +286,7 @@
 				playerTwoRightImg.src = "eggnoggPlayer2.png";
 				p2.img = playerTwoRightImg;
 				if (bub2.bVisible == true){
-					bub2.moveRight();
+					bub2.moveLeft();
 				}
 			}
 			if (curkeys[76]){	// L
@@ -301,9 +301,15 @@
 			// Jumping code for both players
 			if (curkeys[87]){	// W
 				p1.jump();
+				if(bub1.bVisible == true){
+					bub1.jump();
+				}
 			}
 			if (curkeys[73]){	// I
 				p2.jump();
+				if(bub2.bVisible == true){
+					bub2.jump();
+				}
 			}
 			// Blocking Code for both players
 			if (curkeys[69]){	// E
@@ -429,8 +435,6 @@
 			life5.draw();
 			life6.draw();
 
-			bub1.bVisible = false;
-			bub2.bVisible = false;
 			bub1.draw();
 			bub2.draw();
 			
