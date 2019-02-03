@@ -46,7 +46,7 @@
 		}
 		var timerPlayerRespawn = new timerClass(3000);
 		var timerPunch = new timerClass(2000);
-		var timerBlock = new timerClass(1000);
+		var timerBlock = new timerClass(7000);
 
 		// Player
 		class playerClass{
@@ -147,12 +147,58 @@
 				this.img = new Image;
 				this.img.src = rectImg;
 				
+				this.bInAir = false;
 				this.curYspeed = 0;
 				
+				// Judge whether or not the player is moving 
+				this.running = false;
+				
 				this.bVisible = true;
+
+				this.blocking = false;
 				
 			}
-				
+				// Move right
+				moveRight(){
+					this.running = true;
+					if (this.running == true){
+						this.x+=3;
+					}
+				}
+				// Move left
+				moveLeft(){
+					this.running = true;
+					if (this.running == true){
+						this.x-=3;
+					}
+				}
+			
+				// Initiate the a jump for the players
+				jump(){
+					// Can initiate jump only if players is currently on the ground 
+					if (this.bInAir == false){
+						this.bInAir = true;
+						this.curYspeed = -15;
+					}
+				}
+				// This updates the players current location & speed (e.g. if it's falling in the air)
+				// (Must be called in the main gameUpdate method)	
+				update(){
+					// If the p1 is currently in the air (i.e. mid-jump), then update its
+					// location and current vertical speed
+					if (this.bInAir == true){
+						// Update our y-coord and y-speed
+						this.y += this.curYspeed;
+						this.curYspeed++;
+						// Check if we landed on the ground
+						if (this.y > 348){
+							this.y = 348;
+							this.bInAir = false;
+							this.curYspeed = 0;
+						}
+					}
+					
+				}
 				// Draw
 				draw(){
 					if (this.bVisible == true){
@@ -167,6 +213,9 @@
 			var life4 = new rectClass(695, "poutinePixelArt.png");
 			var life5 = new rectClass(695-80, "poutinePixelArt.png");
 			var life6 = new rectClass(695-80-80, "poutinePixelArt.png");
+
+			var bub1 = new rectClass(125, "bub1.png")
+			var bub2 = new rectClass (575, "bub2.png")
 		
 		// Canvas context; used to call Canvas methods
 		var c;
@@ -218,24 +267,36 @@
 				var playerOneFlippedImg = new Image();
 				playerOneFlippedImg.src = "eggnoggPlayer2.png";
 				p1.img = playerOneFlippedImg;
+				if (bub1.bVisible == true){
+					bub1.moveRight();
+				}
 			}
 			if (curkeys[68]){	// D
 				p1.moveRight();
 				var playerOneRightImg = new Image();
 				playerOneRightImg.src = "eggnoggPlayer1.png";
 				p1.img = playerOneRightImg;
+				if (bub1.bVisible == true){
+					bub1.moveRight();
+				}
 			}
 			if (curkeys[74]){	// J
 				p2.moveLeft();
 				var playerTwoRightImg = new Image();
 				playerTwoRightImg.src = "eggnoggPlayer2.png";
 				p2.img = playerTwoRightImg;
+				if (bub2.bVisible == true){
+					bub2.moveRight();
+				}
 			}
 			if (curkeys[76]){	// L
 				p2.moveRight();
 				var playerTwoFlippedImg = new Image();
 				playerTwoFlippedImg.src = "eggnoggPlayer1.png";
 				p2.img = playerTwoFlippedImg;
+				if (bub2.bVisible == true){
+					bub2.moveRight();
+				}
 			}
 			// Jumping code for both players
 			if (curkeys[87]){	// W
@@ -248,12 +309,14 @@
 			if (curkeys[69]){	// E
 				if (timerBlock.isReady()){
 					p1.blocking = true;
+					bub1.bVisible = true;
 				}
 			}
 
 			if (curkeys[80]){ // P
 				if (timerBlock.isReady()){
 					p2.blocking = true;
+					bub2.bVisible = true;
 				}
 			} 
 
@@ -262,7 +325,7 @@
 			
 			if (curkeys[81]){	// Q
 				if(timerPunch.isReady()){
-					p1.x += 15;
+					p1.x += 25;
 					if (p1.intersects(p2)){	
 						if (p2.blocking == false){
 							p2.bVisible = false;
@@ -292,9 +355,8 @@
 				
 			if (curkeys[85]){ // U
 				if(timerPunch.isReady()){	
-					p2.x -=15;
+					p2.x -= 25;
 					if(p2.intersects(p1)){ 
-						p2.x -= 15;
 						if (p1.blocking == false){
 							p1.bVisible = false;
 							if (livesLeft1 == 3){
@@ -366,6 +428,11 @@
 			life4.draw();
 			life5.draw();
 			life6.draw();
+
+			bub1.bVisible = false;
+			bub2.bVisible = false;
+			bub1.draw();
+			bub2.draw();
 			
 		}
 	</script>
