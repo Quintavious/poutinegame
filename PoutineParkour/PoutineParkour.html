@@ -1,0 +1,1112 @@
+<html>
+<head>
+
+	<style>
+		canvas{
+			background: #dddddd;
+		}
+	</style>
+
+	<script>
+		var points = 0;
+		var lives = 3;
+		var heroSpeed = 5;
+		var jumpImg = "jumpingDef.png";
+		var runImg = "runningDef.png";
+		var jumpImgP2 = "jumpingCan.png";
+		var runImgP2 = "runningCan.png";
+		
+		//Speed for all the objects
+		var pftSpeed = 5;
+		var bushSpeed = 5;
+		var grassSpeed = 5;
+		var shoeSpeed = 4;
+		var pointsSpeed = 5;
+		var canSpeed = 5;
+		var philSpeed = 5;
+		var boostSpeed = 5;
+		var rocketSpeed = 5;
+		var enemySpeed = 5;
+		var backgroundSpeed = 5;
+		
+		//Sets all the images and audio
+		var openingCutscene = new Image()
+		openingCutscene.src = "Stand.png";
+		var deathCutscene = new Image()
+		deathCutscene.src = "dead.png";
+		var winCutscene = new Image()
+		winCutscene.src = "runningCut.png";
+		var backgroundMusic = new Audio("music.crdownload");
+		var blastOff = new Audio("blastoff.mp3");
+		
+		var d = false;
+		var i = false;
+		var n = false;
+		var h = false;
+		
+		console.log(d + " is the value of D");
+		
+		// This class represents the hero
+		class heroClass{
+			constructor()
+			{
+				this.x = 700;
+				this.y = 660;
+				this.width = 150;
+				this.height = 250;
+				this.img = new Image();
+				this.img.src = "runningDef.png";
+				this.bVisible = true;
+				this.curYspeed = 0;
+				this.bInAir = false;
+			}
+			
+			moveRight(){
+				this.x += heroSpeed;
+			}
+			moveLeft(){
+				this.x -= heroSpeed;
+			}
+			
+			jump(){
+				if (this.bInAir == false){
+					this.bInAir = true;
+					this.curYspeed = -20;
+				}
+			}
+			
+			update(){
+				if (this.bInAir == true){
+					this.y += this.curYspeed;
+					this.curYspeed ++;
+					hero.img.src = jumpImg;
+					
+					if (this.y == 660){
+						this.bInAir = false;
+						hero.img.src = runImg;
+					}
+					
+					for (i = 0; i < pftAmount; i++){
+						if (this.curYspeed > 0 && this.intersects(platformArray[i])){
+							hero.img.src = runImg;
+							this.curYspeed = 0;
+							this.bInAir = false;
+							this.y = platformArray[i].y - this.height + 1;
+							if (curkeys[38]){
+								this.jump();
+							}
+						}
+						else {
+							if (this.y < 655 && this.intersects(platformArray[i]) == false){
+								this.bInAir = true;
+							}
+							else{
+								this.bInAir = false;
+								this.img.src = runImg;
+								
+								if (curkeys[38]){
+									this.jump();
+									this.img.src = jumpImg;
+								}
+								else if (this.bInAir == false && this.intersects(platformArray[i]) == false){
+									this.y = 655;
+								}
+								
+							}
+						}
+					}
+				
+				}
+			}
+		
+			//Draws hero
+			draw(){
+				if (this.bVisible == true){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		var hero = new heroClass(700, 500, 150, 250, "runningDef.png");
+		
+		class p2Class{
+			constructor()
+			{
+				this.x = 700;
+				this.y = 660;
+				this.width = 150;
+				this.height = 250;
+				this.img = new Image();
+				this.img.src = "runningCan.png";
+				this.bVisible = true;
+				this.curYspeed = 0;
+				this.bInAir = false;
+			}
+			
+			moveRight(){
+				this.x += p2Speed;
+			}
+			moveLeft(){
+				this.x -= p2Speed;
+			}
+			
+			jump(){
+				if (this.bInAir == false){
+					this.bInAir = true;
+					this.curYspeed = -20;
+				}
+			}
+			
+			update(){
+				if (this.bInAir == true){
+					this.y += this.curYspeed;
+					this.curYspeed ++;
+					p2.img.src = jumpImgP2;
+					
+					if (this.y == 660){
+						this.bInAir = false;
+						p2.img.src = runImgP2;
+					}
+					
+					for (i = 0; i < pftAmount; i++){
+						if (this.curYspeed > 0 && this.intersects(platformArray[i])){
+							p2.img.src = runImgP2;
+							this.curYspeed = 0;
+							this.bInAir = false;
+							this.y = platformArray[i].y - this.height + 1;
+							if (curkeys[87]){
+								this.jump();
+							}
+						}
+						else {
+							if (this.y < 655 && this.intersects(platformArray[i]) == false){
+								this.bInAir = true;
+							}
+							else{
+								this.bInAir = false;
+								this.img.src = runImgP2;
+								
+								if (curkeys[38]){
+									this.jump();
+									this.img.src = jumpImgP2;
+								}
+								else if (this.bInAir == false && this.intersects(platformArray[i]) == false){
+									this.y = 655;
+								}
+								
+							}
+						}
+					}
+				
+				}
+			}
+		
+			//Draws hero
+			draw(){
+				if (this.bVisible == true){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		var p2 = new p2Class(700, 500, 150, 250, "runningCan.png");
+		
+		//Shoe class
+		class shoeClass{
+			constructor()
+			{
+				this.x = -200;
+				this.y = 630;
+				this.width = 600;
+				this.height = 300;
+				this.img = new Image();
+				this.img.src = "brock.png";
+			}
+			
+			moveRight(){
+				this.x += shoeSpeed;
+			}
+		
+			//Draws shoe
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		var shoe = new shoeClass(-200, 630, 600, 300, "brock.png");
+		
+		//Creates points class
+		class pointsClass{
+			constructor(pointsX, pointsY)
+			{
+				this.x = pointsX;
+				this.y = pointsY;
+				this.width = 150;
+				this.height = 150;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "poutine.png";
+			}
+			
+			scrollLeft(){
+				this.x -= pointsSpeed;
+			}
+			
+			//Draws sandwich
+			draw(){
+				if (this.bVisible){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		//Creates obstacle class
+		class obstClass{
+			constructor(obstX)
+			{
+				this.x = obstX;
+				this.y = 760;
+				this.width = 150;
+				this.height = 150;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "bush.png";
+			}
+			
+			scrollLeft(){
+				this.x -= bushSpeed;
+			}
+			
+			//Draws face
+			draw(){
+				if (this.bVisible){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		//Creates grass
+		class grassClass{
+			constructor()
+			{
+				this.x = 0;
+				this.y = 865;
+				this.width = 50000;
+				this.height = 65;
+				this.speed = 5;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "grass.png";
+			}
+			
+			scrollLeft(){
+				this.x -= grassSpeed;
+			}
+			
+			//Draws face
+			draw(){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		var grass = new grassClass(0, 865, 50000, 65, "grass.png");
+		
+		//Creates platform class
+		class platformClass{
+			constructor(pfX, pfY,
+						pfWidth, pfHeight,	
+						pfImgFile)			
+			{
+				this.x = pfX;
+				this.y = pfY;
+				this.width = pfWidth;
+				this.height = pfHeight;
+				this.pfImgFile = new Image()
+				this.pfImgFile.src = "platform.png";
+			}
+			
+			scrollLeft(){
+				this.x -= pftSpeed;
+			}
+			
+			// Draw this platform on the screen
+			draw(){
+				c.drawImage(this.pfImgFile, this.x, this.y, this.width, this.height);	
+			}
+		}
+		
+		//Creates rocket class
+		class rocketClass{
+			constructor()
+			{
+				this.x = 20700;
+				this.y = 400;
+				this.width = 200;
+				this.height = 500;
+				this.speed = 5;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "spaceship.png";
+			}
+			
+			scrollLeft(){
+				this.x -= rocketSpeed;
+			}
+			
+			//Draws face
+			draw(){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		var rocket = new rocketClass(20000, 600, 100, 65, "spaceship.png");
+		
+		//Creates a timer for the splash screen
+		class timerClass{
+			constructor(timeIntervalMS){
+				// Initialize oldTime to be the time of creation
+				this.oldTime = new Date();
+
+				// Set interval to elapse before the timer fires
+				this.interval = timeIntervalMS;
+				
+				// Keeps track of the # of milliseconds accumulated since the last firing
+				this.accum = 0;
+			}
+
+			// This method returns true if the timer is ready to fire, false otherwise
+			// If it returns true, then resets fire interval
+			isReady(){
+				var curTime = new Date();
+				var delta = curTime - this.oldTime;
+
+				this.accum += delta;
+				this.oldTime = curTime;
+				if (this.accum > this.interval){
+					this.accum = 0;
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		//Sets counter for switching pictures during cutscenes 
+		var countAnimation = 0;
+		
+		//Creates background class
+		class autoScrollingBackgroundClass{
+
+			constructor(bgSrc,					// Name of the image file (string)
+						bgWidth)				// Width of background in its entirety (integer)
+			{
+				this.img = new Image();
+				this.img.src = "FremdBackground.png";
+				this.x1 = 0;
+				this.x2 = cWidth;
+				this.speed = backgroundSpeed;
+				this.x = 0;
+				this.y = 0;
+			}
+
+			scrollLeft(){
+				this.x1 -= this.speed;
+				this.x2 -= this.speed;
+
+				if (this.x2 < 0){
+					this.x1 = 0;
+					this.x2 = cWidth;
+				}
+			}
+			// Draw the background image
+			draw(){
+				c.drawImage(this.img, this.x1, 0, cWidth, cHeight);
+				c.drawImage(this.img, this.x2, 0, cWidth, cHeight);
+			}
+		}
+		
+		//Creates boost class
+		class boostClass{
+			constructor(randBstX, randBstY)
+			{
+				this.x = randBstX;
+				this.y = randBstY;
+				this.width = 100;
+				this.height = 75;
+				this.speed = 5;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "boost.png";
+			}
+			
+			scrollLeft(){
+				this.x -= boostSpeed;
+			}
+			
+			//Draws image
+			draw(){
+				if (this.bVisible == true){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		//Creates enemy class
+		class enemyClass{
+			constructor(randEmyX, randEmyY)
+			{
+				this.x = randEmyX;
+				this.y = randEmyY;
+				this.width = 100;
+				this.height = 100;
+				this.speed = 5;
+				this.bVisible = true;
+				this.img = new Image();
+				this.img.src = "brock.png";
+			}
+			
+			scrollLeft(){
+				this.x -= enemySpeed;
+			}
+			
+			//Draws image
+			draw(){
+				if (this.bVisible == true){
+					c.drawImage(this.img, this.x, this.y, this.width, this.height);
+				}
+			}
+
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+		}
+		
+		
+		
+		// Canvas context; used to call Canvas methods
+		var c;
+
+		// Canvas width and height.
+		var cWidth, cHeight;
+		
+		// Stores the current keyboard state
+		var curkeys = [];
+		
+		// Stores keys that have been newly pressed since last update
+		var newkeys = [];
+		
+		var gameState = "cutscene1";
+		
+		//Sets all the random amounts for the objects
+		var pointsArray = [];
+		
+		var pointsAmount = Math.floor((Math.random()*40) + 30);
+		
+		var platformArray = [];
+		
+		var pftAmount = Math.floor((Math.random()*30) + 25);
+		
+		var obstArray = [];
+		
+		var obstAmount = Math.floor((Math.random()*25) + 20);
+		
+		var boostArray = [];
+		
+		var boostAmount = Math.floor((Math.random()*5) + 5);
+		
+		var enemyArray = [];
+		
+		if (gameState == "levelTwo"){
+			var enemyAmount = Math.floor((Math.random()*100) + 100);
+		}
+		else{
+			var enemyAmount = Math.floor((Math.random()*15) + 5);
+		}
+		// Initializes entire game framework. This method should only be called
+		// once, by the body onload event handler.
+		function gameFrameworkInit(){		
+			// Initialize key arrays
+			for (i = 0; i < 256; i++){
+				curkeys[i] = false;
+				newkeys[i] = false;
+			}
+			
+			//Fills arrays and generates random x and y
+			for (i = 0; i < pointsAmount; i++){
+				pointsArray[i] = new pointsClass(randPtsX, randPtsY);
+				var randPtsX = Math.floor((Math.random()*20000) + 801);
+				var randPtsY = Math.floor((Math.random()*300) + 450);
+			}
+			for (i = 0; i < boostAmount; i++){
+				boostArray[i] = new boostClass(randBstX, randBstY);
+				var randBstX = Math.floor((Math.random()*20000) + 801);
+				var randBstY = Math.floor((Math.random()*300) + 450);
+			}
+			for (i = 0; i < enemyAmount; i++){
+				enemyArray[i] = new enemyClass(randEmyX, randEmyY);
+				var randEmyX = Math.floor((Math.random()*20000) + 801);
+				var randEmyY = Math.floor((Math.random()*350) + 400);
+			}
+			for (i = 0; i < pftAmount; i++){
+				platformArray[i] = new platformClass(randptfX, randptfY, randptfWidth, 25);
+				var randptfX = Math.floor((Math.random()*19300) + 801);
+				var randptfY = Math.floor((Math.random()*350) + 400);
+				var randptfWidth = Math.floor((Math.random()*400) + 100);
+			}
+			for (i = 0; i < obstAmount; i++){
+				obstArray[i] = new obstClass(obstX, 660);
+				var obstX = Math.floor((Math.random()*19300) + 801);
+			}
+		
+			// Initialize global variables for canvas
+			c = myCanvas.getContext('2d');
+			cWidth = myCanvas.width;
+			cHeight = myCanvas.height;
+			
+			background = new autoScrollingBackgroundClass("background.jfif", 0, 0, 20000, 1000);
+			
+			// Start listeners for getting keyboard state
+	        window.addEventListener('keydown',
+	        						function(e){
+										if (!curkeys[e.keyCode]){
+											curkeys[e.keyCode] = true;
+											newkeys[e.keyCode] = true;
+										}
+									}
+	        					   );
+	        
+	        window.addEventListener('keyup',
+	        						 function(e){ curkeys[e.keyCode] = false; }
+	        					   );
+
+			// Schedule the update function to be called right before the next repaint.
+			// (At the end of the update function, it will schedule itself to be called
+			// again before the NEXT repaint, and so on.
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		function gameUpdate(){
+			if (gameState == "cutscene1"){
+				//when the timer is done switch to the game
+				countAnimation += 1;
+				if (countAnimation >= 60){
+					openingCutscene.src = "throwing.png";
+				}
+				if (countAnimation >= 120){
+					openingCutscene.src = "MoreThrowing.png";
+				}
+				if (countAnimation >= 180){
+					openingCutscene.src = "finished.png";
+				}
+				if (countAnimation >= 240){
+					gameState = "levelOne";
+					countAnimation = 0;
+				}
+			}
+			
+			//Level One
+			if (gameState == "levelOne"){
+				backgroundMusic.play();
+				if (newkeys[38]){ // Up arrow
+					hero.jump();
+				}
+				if (newkeys[87]){
+					p2.jump();
+				}
+				
+				//Tells all the objects to scroll towards the player
+				background.scrollLeft();
+				for (i=0; i < pointsAmount; i++){
+					pointsArray[i].scrollLeft();
+				}
+				for (i=0; i < boostAmount; i++){
+					boostArray[i].scrollLeft();
+				}
+				for (i=0; i < enemyAmount; i++){
+					enemyArray[i].scrollLeft();
+				}
+				for (i=0; i < pftAmount; i++){
+					platformArray[i].scrollLeft();
+				}
+				for (i=0; i < obstAmount; i++){
+					obstArray[i].scrollLeft();
+				}
+				rocket.scrollLeft();
+				grass.scrollLeft();
+				
+				//Detects intersection
+				if (hero.intersects(shoe)){
+					gameState = "lose";
+					lives --;
+				}
+				for (i = 0; i < pointsAmount; i++){
+					if (pointsArray[i].bVisible == true &&
+						hero.intersects(pointsArray[i]))
+					{
+						pointsArray[i].bVisible = false;
+						points += 10;
+					}
+				}
+				for (i = 0; i < boostAmount; i++){
+					if (hero.intersects(boostArray[i]))
+					{
+						boostArray[i].bVisible = false;
+						hero.x += .5;
+					}
+				}
+				for (i = 0; i < enemyAmount; i++){
+					if (hero.intersects(enemyArray[i]))
+					{
+						enemyArray[i].bVisible = false;
+						hero.x -= 1;
+					}
+				}
+				if (hero.intersects(rocket)){
+					gameState = "gameWin1";
+				}
+				for (i = 0; i < obstAmount; i++){
+					if (hero.intersects(obstArray[i])){
+						hero.x -= .5;
+					}
+				}
+				
+				//Detects intersection
+				if (p2.intersects(shoe)){
+					gameState = "lose";
+					lives --;
+				}
+				for (i = 0; i < pointsAmount; i++){
+					if (pointsArray[i].bVisible == true &&
+						p2.intersects(pointsArray[i]))
+					{
+						pointsArray[i].bVisible = false;
+						points += 10;
+					}
+				}
+				for (i = 0; i < boostAmount; i++){
+					if (p2.intersects(boostArray[i]))
+					{
+						boostArray[i].bVisible = false;
+						p2.x += .5;
+					}
+				}
+				for (i = 0; i < enemyAmount; i++){
+					if (p2.intersects(enemyArray[i]))
+					{
+						enemyArray[i].bVisible = false;
+						p2.x -= 1;
+					}
+				}
+				if (p2.intersects(rocket)){
+					gameState = "gameWin1";
+				}
+				for (i = 0; i < obstAmount; i++){
+					if (p2.intersects(obstArray[i])){
+						p2.x -= .5;
+					}
+				}
+				
+				hero.update();
+				p2.update();
+			}
+			
+			//Level Two
+			if (gameState == "levelTwo"){
+				backgroundMusic.play();
+				//Increases the speed of the objects to make the game more difficult
+				pftSpeed = 7;
+				bushSpeed = 7;
+				grassSpeed = 7;
+				shoeSpeed = 6;
+				pointsSpeed = 7;
+				canSpeed = 7;
+				philSpeed = 7;
+				boostSpeed = 7;
+				rocketSpeed = 7;
+				enemySpeed = 7;
+				backgroundSpeed = 7;
+				
+				if (newkeys[38]){ // Up arrow
+					hero.jump();
+				}
+				
+				//Tells all the objects to scroll towards the player
+				background.scrollLeft();
+				for (i=0; i < pointsAmount; i++){
+					pointsArray[i].scrollLeft();
+				}
+				for (i=0; i < boostAmount; i++){
+					boostArray[i].scrollLeft();
+				}
+				for (i=0; i < enemyAmount; i++){
+					enemyArray[i].scrollLeft();
+				}
+				powerPhil.scrollLeft();
+				captCan.scrollLeft();
+				for (i=0; i < pftAmount; i++){
+					platformArray[i].scrollLeft();
+				}
+				for (i=0; i < obstAmount; i++){
+					obstArray[i].scrollLeft();
+				}
+				rocket.scrollLeft();
+				grass.scrollLeft();
+				
+				//Detects intersection
+				if (hero.intersects(shoe)){
+					gameState = "lose2";
+					lives --;
+				}
+				for (i = 0; i < pointsAmount; i++){
+					if (pointsArray[i].bVisible == true &&
+						hero.intersects(pointsArray[i]))
+					{
+						pointsArray[i].bVisible = false;
+						points += 20;	//Double points
+					}
+				}
+				for (i = 0; i < boostAmount; i++){
+					if (hero.intersects(boostArray[i]))
+					{
+						boostArray[i].bVisible = false;
+						hero.x += 1;
+					}
+				}
+				for (i = 0; i < enemyAmount; i++){
+					if (hero.intersects(enemyArray[i]))
+					{
+						enemyArray[i].bVisible = false;
+						hero.x -= 1;
+					}
+				}
+				//Changes character when you collect the power ups
+				if (hero.intersects(powerPhil)){
+					runImg = "runningPhil.png";
+					jumpImg = "jumpingPhil.png";
+					hero.img.src = "runningPhil.png";
+					powerPhil.bVisible = false;
+				}
+				if (hero.intersects(captCan)){
+					runImg = "runningCan.png";
+					jumpImg = "jumpingCan.png";
+					hero.img.src = "runningCan.png";
+					captCan.bVisible = false;
+				}
+				//When you reach the rocket you win
+				if (hero.intersects(rocket)){
+					gameState = "gameWin2";
+				}
+				for (i = 0; i < obstAmount; i++){
+					if (hero.intersects(obstArray[i])){
+						hero.x -= 1; 	//Shoe moves up more when you go in a bush
+					}
+				}
+		
+				//Cheat codes
+				if (curkeys[68]){
+					d = true;
+				}
+				if (curkeys[73]){
+					i = true;
+				}
+				if (curkeys[78]){
+					n = true;
+				}
+				if (curkeys[72]){
+					h = true;
+				}
+				//Changes the character if you have typed in the cheat code
+				if (d == true && i == true && n == true && h == true){
+					runImg = "grass.png";
+					jumpImg = "grass.png";
+					hero.img.src = runImg;
+				}
+				
+				hero.update();
+				
+			}
+				console.log(gameState + " is the current gameState");
+			if (gameState == "lose"){				//Stops background music and plays cutscene
+				backgroundMusic.pause();
+				countAnimation += 1;
+				if (countAnimation >= 60){
+					deathCutscene.src = "hit.png"
+				}
+				if (countAnimation >= 120){
+					deathCutscene.src = "afterHit.png"
+					if (curkeys[13]){ 
+						//Resets postions after death
+						countAnimation = 0;
+						deathCutscene.src = "dead.png";
+						shoe.x = -200
+						hero.x = 700
+						gameState = "levelOne";
+					}
+				}
+				
+				//Ends game if player is out of lives
+				if (lives < 0){
+					gameState = "gameOver";
+				}
+			}
+			
+			if (gameState == "lose2"){
+				//Stops music and plays cutscene
+				backgroundMusic.pause();
+				countAnimation += 1;
+				if (countAnimation >= 60){
+					deathCutscene.src = "hit.png"
+				}
+				if (countAnimation >= 120){
+					deathCutscene.src = "afterHit.png"
+					if (curkeys[13]){ 
+						//Resets postions after death
+						countAnimation = 0;
+						deathCutscene.src = "dead.png";
+						shoe.x = -200
+						hero.x = 700
+						gameState = "levelTwo";
+					}
+				}
+				
+				//Ends game if player is out of lives
+				if (lives < 0){
+					gameState = "gameOver";
+				}
+			}
+			
+			if (gameState == "gameOver"){
+				//Stops music and plays cutscene
+				backgroundMusic.pause();
+				countAnimation += 1;
+				if (countAnimation >= 60){
+					deathCutscene.src = "hit.png"
+				}
+				if (countAnimation >= 120){
+					deathCutscene.src = "afterHit.png"
+					if (curkeys[13]){ 
+						//Resets postions after death
+						countAnimation = 0;
+						deathCutscene.src = "dead.png";
+						shoe.x = -200
+						hero.x = 700
+						gameState = "gameEnd";
+					}
+				}
+			}
+			
+			if (gameState == "gameWin1"){
+				//Stops music and plays cutscene
+				backgroundMusic.pause();
+				blastOff.play();
+					rocket.y -= 5;
+					hero.bVisible = false;
+					countAnimation += 1;
+					if (countAnimation >= 180){ //Enter
+						//Rerolls the random placements for the objects
+						blastOff.pause();
+						countAnimation = 0;
+						winCutscene.src = "runningCut.png";
+						gameFrameworkInit();
+						//Resets positions
+						shoe.x = -200;
+						hero.x = 700;
+						hero.bVisible = true;
+						rocket.x = 21000;
+						rocket.y = 400;
+						gameState = "levelTwo";
+					} 	
+			}
+			
+			if (gameState == "gameWin2"){
+				backgroundMusic.pause();
+				countAnimation += 1;
+				if (countAnimation >= 60){
+					winCutscene.src = "shoeStopped.png";
+				}
+				if (countAnimation >= 120){
+					winCutscene.src = "hurray.png";
+					if (curkeys[13]){ //Enter
+						gameState = "endCredits";
+					}
+				}
+			}
+			
+			// DO NOT ADD ANY OR MODIFY ANY CODE BELOW HERE
+
+			// Reset newkeys
+			for (i = 0; i < 256; i++){
+				newkeys[i] = false;
+			}
+
+			// At the end of the update function, repaint the screen
+			gameDraw();
+				
+			// Last thing the update function does is to schedule itself to be called
+			// again before the next repaint
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+		function gameDraw(){
+			// Clear the canvas before we draw the current frame
+			c.clearRect(0,0,cWidth,cHeight);
+			
+			if (gameState == "cutscene1"){
+				c.drawImage(openingCutscene, 0, 0, cWidth, cHeight);
+			}
+			
+			if (gameState == "levelOne" || gameState == "levelTwo" || gameState == "gameWin1"){
+				background.draw();
+				for (i = 0; i < pointsAmount; i++){
+					pointsArray[i].draw();
+				}
+				for (i = 0; i < boostAmount; i++){
+					boostArray[i].draw();
+				}
+				for (i = 0; i < enemyAmount; i++){
+					enemyArray[i].draw();
+				}
+				for (i = 0; i < pftAmount; i++){
+					platformArray[i].draw();
+				}
+				grass.draw();
+				for (i = 0; i < obstAmount; i++){
+					obstArray[i].draw();
+				}
+				rocket.draw();
+				hero.draw();
+				shoe.draw();
+				p2.draw();
+				
+				//Displays points and lives
+				c.font = "15px times";
+				c.fillText("Points: " + points, 1825, 15);
+				c.fillText("Lives: " + lives, 1765, 15);
+			}
+			
+			if (gameState == "lose"){
+				c.drawImage(deathCutscene, 0, 0, cWidth, cHeight);
+			}
+			
+			if (gameState == "gameWin2"){
+				c.drawImage(winCutscene, 0, 0, cWidth, cHeight);
+			}
+			
+			if (gameState == "lose2"){
+				c.drawImage(deathCutscene, 0, 0, cWidth, cHeight);
+			}
+			
+			if (gameState == "gameOver"){
+				c.font = "50px times";
+				c.drawImage(deathCutscene, 0, 0, cWidth, cHeight);
+				c.fillText("You got caught! You got " + points + " points!", 600, 700);
+			}
+			
+			if (gameState == "endCredits"){
+				c.font = "50px times";
+				c.drawImage(winCutscene, 0, 0, cWidth, cHeight);
+				c.fillText("You won! You got " + points + " points!", 700, 700);
+			}
+			
+		}
+
+
+	</script>
+
+</head>
+
+
+<body onload="gameFrameworkInit()">
+	<canvas id="myCanvas" width="1895" height="920"></canvas>
+</body>
+
+</html>
