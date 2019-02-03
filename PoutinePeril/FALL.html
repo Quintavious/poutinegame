@@ -1,0 +1,509 @@
+<html>	
+<head>
+
+	<style>
+		canvas{
+			background: #dddddd;
+			
+		}
+		body{
+			text-align:center;
+			background-color:black;
+		}
+		h1{
+			color:white;
+		}
+	</style>
+
+	<script>
+		var winner = "";
+		// This class is for the user-controlled bread object
+		class bread1Class{
+
+			// Constructor
+			constructor(){
+				this.x = 230;
+				this.y = 550;
+				this.width = 100;
+				this.height = 40;
+
+				this.img = new Image();
+				this.img.src = "poutine.png";
+			}
+
+			// Movement methods - don't let bread move off the screen
+			moveRight(){
+				if (this.x + this.width < (cWidth/2)-20){
+					this.x += 9;
+				}
+			}
+			moveLeft(){
+				if (this.x > 5){
+					this.x -= 9;
+				}
+			}
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		class bread2Class{
+
+			// Constructor
+			constructor(){
+				this.x = 730;
+				this.y = 550;
+				this.width = 100;
+				this.height = 40;
+
+				this.img = new Image();
+				this.img.src = "poutine.png";
+			}
+
+			// Movement methods - don't let bread move off the screen
+			moveRight(){
+				if (this.x + this.width < cWidth-5){
+					this.x += 9;
+				}
+			}
+			
+			moveLeft(){
+				if (this.x > 500){
+					this.x -= 9;
+				}
+			}
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+	
+		
+		// This class is for the cheese object
+		class cheese1Class{
+			// Constructor
+			constructor(){
+				this.x = 50;
+				this.y = 0;
+				this.width = 80;
+				this.height = 80;
+
+
+				this.img = new Image();
+				this.img.src = "bomb.png";
+			}
+
+			// This function returns true if this cheese intersects "obj", where "obj" is
+			// either a tomato object or a bread object. Returns false otherwise.
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+
+			// Main update function for cheese, takes care of:
+			//		1. cheese movement
+			//		2. edge logic (bounce off of edges, die at the bottom edge)
+			//		3. bounce off of bread
+			//		4. eliminate tomatoes that we hit
+			update(){
+				
+				this.y += 10;
+
+
+				// Bottom edge: cheese dies, start new cheese
+				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
+				if (this.y + this.height > cHeight){
+					
+					this.x = Math.floor((Math.random() * 480));
+					this.y = 0;
+				}
+
+				// bounce off of bread, and changes the value of the movement to its opposite, to look like its bouncing off
+				if (this.intersects(bread1)){
+					var winner = "player2";
+					window.alert("Player 2 Has Won!");
+				}
+
+			}
+
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		
+		// This class is for the cheese object
+		class cheese2Class{
+			// Constructor
+			constructor(){
+				this.x = 520;
+				this.y = 0;
+				this.width = 80;
+				this.height = 80;
+
+
+				this.img = new Image();
+				this.img.src = "bomb.png";
+			}
+
+			// This function returns true if this cheese intersects "obj", where "obj" is
+			// either a tomato object or a bread object. Returns false otherwise.
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+
+			// Main update function for cheese, takes care of:
+			//		1. cheese movement
+			//		2. edge logic (bounce off of edges, die at the bottom edge)
+			//		3. bounce off of bread
+			//		4. eliminate tomatoes that we hit
+			update(){
+				
+				this.y += 10;
+
+
+				// Bottom edge: cheese dies, start new cheese
+				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
+				if (this.y + this.height > cHeight){
+					
+					this.x = Math.floor((Math.random() * 440) + 510);
+					this.y = 0;
+					
+				}
+
+				// bounce off of bread, and changes the value of the movement to its opposite, to look like its bouncing off
+				if (this.intersects(bread2)){
+					var winner = "player1";
+					window.alert("Player 1 Has Won!");
+				}
+
+			}
+
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		// This class is for the cheese object
+		class cheese3Class{
+			// Constructor
+			constructor(){
+				this.x = 400;
+				this.y = 100;
+				this.width = 80;
+				this.height = 80;
+
+
+				this.img = new Image();
+				this.img.src = "bomb.png";
+			}
+
+			// This function returns true if this cheese intersects "obj", where "obj" is
+			// either a tomato object or a bread object. Returns false otherwise.
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+
+			// Main update function for cheese, takes care of:
+			//		1. cheese movement
+			//		2. edge logic (bounce off of edges, die at the bottom edge)
+			//		3. bounce off of bread
+			//		4. eliminate tomatoes that we hit
+			update(){
+				
+				this.y += 14;
+
+
+				// Bottom edge: cheese dies, start new cheese
+				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
+				if (this.y + this.height > cHeight){
+					
+					this.x = Math.floor((Math.random() * 490) + 10);
+					this.y = 0;
+					
+				}
+
+				// bounce off of bread, and changes the value of the movement to its opposite, to look like its bouncing off
+				if (this.intersects(bread2)){
+					var winner = "player1";
+					window.alert("Player 1 Has Won!");
+				}
+
+			}
+
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+		
+		class cheese4Class{
+			// Constructor
+			constructor(){
+				this.x = 800;
+				this.y = (-500);
+				this.width = 80;
+				this.height = 80;
+
+
+				this.img = new Image();
+				this.img.src = "bomb.png";
+			}
+
+			// This function returns true if this cheese intersects "obj", where "obj" is
+			// either a tomato object or a bread object. Returns false otherwise.
+			intersects(obj){
+				if (this.x < obj.x + obj.width &&
+					this.x + this.width > obj.x &&
+					this.y < obj.y + obj.height &&
+					this.y + this.height > obj.y)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+
+
+			// Main update function for cheese, takes care of:
+			//		1. cheese movement
+			//		2. edge logic (bounce off of edges, die at the bottom edge)
+			//		3. bounce off of bread
+			//		4. eliminate tomatoes that we hit
+			update(){
+				
+				this.y += 14;
+
+
+				// Bottom edge: cheese dies, start new cheese
+				// If the cheese moves off the bottom of the screen, they lose a life, the cheese coordinates and speed are reset, plays audio file, 
+				if (this.y + this.height > cHeight){
+					
+					this.x = Math.floor((Math.random() * 440) + 510);
+					this.y = 0;
+					
+				}
+
+				// bounce off of bread, and changes the value of the movement to its opposite, to look like its bouncing off
+				if (this.intersects(bread2)){
+					var winner = "player1";
+					window.alert("Player 1 Has Won!");
+				}
+
+			}
+
+
+			// Draw method
+			draw(){
+				c.drawImage(this.img, this.x, this.y, this.width, this.height);
+			}
+		}
+	
+
+		// Canvas context; used to call Canvas methods
+		var c;
+
+		// Canvas width and height.
+		var cWidth, cHeight;
+
+		// Stores the current keyboard state
+		var curkeys = [];
+		
+		// Stores keys that have been newly pressed since last update
+		var newkeys = [];
+
+
+
+		// Our global variables (bread, cheese, tomatoes)
+		var bread1;
+		var bread2;
+		var cheese1;
+		var cheese2;
+		
+		var cheese3;
+		var cheese4;
+		
+
+		// The current game state, can be one of: "play", "gameover"
+		
+		
+		
+		
+		
+		// set images to variables
+	//	var splashImg = new Image();
+	//	splashImg.src = "pirate.jpg"
+	//	var burglarImg = new Image();
+	//	burglarImg.src = "burglar.jpg"
+	//	var hulkImg = new Image();
+	//	hulkImg.src = "hulk.png"
+		
+
+		// Initializes entire game framework. This method should only be called
+		// once, by the body onload event handler.
+		function gameFrameworkInit(){
+			// Initialize key arrays
+			for (i = 0; i < 256; i++){
+				curkeys[i] = false;
+				newkeys[i] = false;
+			}
+		
+			// Initialize global variables for canvas
+			c = myCanvas.getContext('2d');
+			cWidth = myCanvas.width;
+			cHeight = myCanvas.height;
+
+
+			// Initialize global variables for our game
+			bread1 = new bread1Class();
+			cheese1 = new cheese1Class();
+			
+			bread2 = new bread2Class();
+			cheese2 = new cheese2Class();
+			
+			cheese3 = new cheese3Class();
+			cheese4 = new cheese4Class();
+
+
+			// Start listeners for getting keyboard state
+	        window.addEventListener('keydown',
+	        						 function(e){
+										if (!curkeys[e.keyCode]){
+											curkeys[e.keyCode] = true;
+											newkeys[e.keyCode] = true;
+										}
+									 }
+	        					   );
+	        
+	        window.addEventListener('keyup',
+	        						 function(e){ curkeys[e.keyCode] = false; }
+	        					   );
+
+			// Schedule the update function to be called right before the next repaint.
+			// (At the end of the update function, it will schedule itself to be called
+			// again before the NEXT repaint, and so on.
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+
+		// Main update loop for the entire game
+		function gameUpdate(){
+				
+			
+				// Arrow keys for bread movement
+				
+					// if a is pressed
+					if (curkeys[65]){
+						bread1.moveLeft();
+					}
+					
+					// d pressed
+					if (curkeys[68]){
+						bread1.moveRight();
+					}
+					
+					// if a is pressed
+					if (curkeys[37]){
+						bread2.moveLeft();
+					}
+					
+					// d pressed
+					if (curkeys[39]){
+						bread2.moveRight();
+					}
+					
+			
+
+					// makes sure the cheese will keep moving no matter what level you are currently on
+					cheese1.update();
+					cheese2.update();
+					cheese3.update();
+					cheese4.update();
+				
+			
+
+
+			// DO NOT ADD OR MODIFY ANY CODE BELOW HERE
+			// Reset newkeys
+			for (i = 0; i < 256; i++){
+				newkeys[i] = false;
+			}
+
+			// At the end of the update function, repaint the screen
+			gameDraw();
+				
+			// Last thing the update function does is to schedule itself to be called
+			// again before the next repaint
+			window.requestAnimationFrame(gameUpdate);
+		}
+
+
+		// Main draw loop for the entire game
+		function gameDraw(){
+			// Clear the canvas before we draw the current frame
+			c.clearRect(0, 0, cWidth, cHeight);
+			
+			
+					// Draw bread/cheese/tomatoes
+					bread1.draw();
+					cheese1.draw();
+					
+					bread2.draw();
+					cheese2.draw();
+					
+					cheese3.draw();
+					cheese4.draw();
+
+		}
+
+
+	</script>
+
+
+</head>
+<body onload= "gameFrameworkInit()">
+	<h1>Avoid the Cheese!</h1>
+	<canvas id="myCanvas" height="600px" width="1000px"></canvas>
+
+</body>
+</html>
